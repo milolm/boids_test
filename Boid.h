@@ -9,9 +9,10 @@ public:
     Vec2d position;
     Vec2d velocity;
     Vec2d acceleration;
+    float mass;
 
-    float maxSpeed{ 1.f };
-    float maxForce{ 0.5f };
+    float maxSpeed{ 0.90f };
+    float maxForce{ 0.38f };
 
     float visionLength{ 50.f };
 
@@ -34,6 +35,9 @@ public:
     Vec2d getSeparation(std::vector<Boid>&);
     Vec2d getCohesion(std::vector<Boid>&);
     Vec2d getAlignment(std::vector<Boid>&);
+    void applyFlocking(std::vector<Boid>&);
+
+    bool isInRange(Boid&, const float&);
 };
 
 #endif

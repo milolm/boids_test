@@ -1,4 +1,4 @@
-CFLAGS = -std=c++17 -Wall -Wextra -Wsign-conversion
+CFLAGS = -std=c++17 -Wall -Wextra -Wsign-conversion -O2
 LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 CXX=g++
 SRC = $(wildcard *.cpp)

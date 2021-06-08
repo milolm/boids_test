@@ -45,9 +45,6 @@ public:
     Vec2d& limit(const float&);
 
     // --- Vec2d util
-
-    bool magnitudeCmp(const float&);
-
     static Vec2d randomUnitVector();
     static float toDegree(const float&);
 

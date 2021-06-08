@@ -151,11 +151,3 @@ float Vec2d::toDegree(const float& rad)
 
     return rad * (180.f / pi);
 }
-
-// Returns true if the vectors magnitude is greater or equal to length
-bool Vec2d::magnitudeCmp(const float& length)
-{
-    if (x <= 0 && y <= 0) return false;
-
-    return ((x * x + y * y) <= (length * length));
-}

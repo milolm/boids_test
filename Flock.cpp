@@ -34,11 +34,7 @@ void Flock::updateAllBoids()
 {
     for(boidsSize_t i{0}; i < boids.size(); ++i)
     {
-
-        boids[i].acceleration += (boids[i].getSeparation(boids) * 0.0f);
-        boids[i].acceleration += (boids[i].getCohesion(boids) * 1.0f);
-        boids[i].acceleration += (boids[i].getAlignment(boids) * 0.f);
-
+        boids[i].applyFlocking(boids);
         boids[i].update(xBorder, yBorder);
     }
 

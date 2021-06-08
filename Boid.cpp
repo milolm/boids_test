@@ -4,6 +4,7 @@
 // ---------------- Constructors -------------------- //
 Boid::Boid()
 {
+    mass = 10.f;
     position = Vec2d(0.f, 0.f);
     velocity = Vec2d(0.f, 0.f);
     acceleration = Vec2d(0.f, 0.f);
@@ -13,6 +14,8 @@ Boid::Boid()
 // ---------------- Methods -------------------- //
 void Boid::update(const unsigned int& xBorder, const unsigned int& yBorder)
 {
+    // Acceleration is  the sum of the forces, mass acts like another weight;
+    acceleration /= mass;
     velocity += acceleration;
     velocity.limit(maxSpeed);
 
@@ -20,6 +23,16 @@ void Boid::update(const unsigned int& xBorder, const unsigned int& yBorder)
 
     wrapAroundBorders(xBorder, yBorder);
     acceleration = Vec2d(0.f, 0.f); // Reset the acceleration everytime it is updated;
+}
+// Returns true if the distance between us and boid is equal or less than range
+bool Boid::isInRange(Boid& boid, const float& range)
+{
+    // Difference between both positions
+    Vec2d d( boid.position - position );
+
+    if (this == &boid) return false;
+
+    return (d.x * d.x) + (d.y * d.y) <= (range * range);
 }
 
 
@@ -52,60 +65,68 @@ Vec2d Boid::seek(Vec2d& target)
 
 Vec2d Boid::getSeparation(std::vector<Boid>& boids)
 {
-    Vec2d steer(0.f, 0.f);
+    Vec2d desired( 0.f, 0.f );
 
     for (auto& boid : boids)
     {
-        Vec2d diff(boid.position - position);
-
-        // Checks if magnitude of diff is <= than visionLength
-        if (diff.magnitudeCmp(visionLength / 2))
+        Vec2d diff ( position - boid.position );
+        if (isInRange(boid, visionLength))
         {
-            steer += diff;
-            steer / diff.magnitude();
+            diff.normalize();
+            desired += ((diff * 2)/ (diff.magnitude() * diff.magnitude()));
+
         }
     }
-    steer.normalize();
 
-    steer += position;
+    return (desired - velocity);
+}
 
-    return seek(steer);
+Vec2d Boid::getAlignment(std::vector<Boid>& boids)
+{
+
+    Vec2d avgVel( 0.f, 0.f );
+
+    for (auto& boid : boids)
+    {
+        if (isInRange(boid, visionLength))
+        {
+            avgVel += boid.velocity;
+        }
+    }
+
+    return (avgVel - velocity);
 }
 
 Vec2d Boid::getCohesion(std::vector<Boid>& boids)
 {
-    Vec2d avgPos(0.f, 0.f);
+    Vec2d avgPos( 0.f, 0.f );
     int count{};
 
     for(auto& boid : boids)
     {
-        Vec2d diff(boid.position - position);
-        if (diff.magnitudeCmp(visionLength))
+        if (isInRange(boid, visionLength))
         {
             avgPos += boid.position;
             ++count;
         }
     }
+
+    if (count == 0) return Vec2d(0.f, 0.f);
+
     avgPos /= count;
 
-    return seek(avgPos);
+    Vec2d desiredVel( avgPos - position );
+
+    return (desiredVel - velocity);
 }
 
-Vec2d Boid::getAlignment(std::vector<Boid>& boids)
+void Boid::applyFlocking(std::vector<Boid>& boids)
 {
-    Vec2d avgVel(0.f, 0.f);
-    int count{};
+    // Weighted all 3 behaviors
+    Vec2d wSeparation(getSeparation(boids) * 1.8f);
+    Vec2d wAlignment(getAlignment(boids) * 1.85f);
+    Vec2d wCohesion(getCohesion(boids) * 0.35f);
 
-    for(auto& boid : boids)
-    {
-        Vec2d diff(boid.position - position);
-
-        if (diff.magnitudeCmp(visionLength))
-        {
-            avgVel += boid.velocity;
-        }
-    }
-    avgVel /= count;
-
-    return (avgVel - velocity).limit(maxForce);
+    acceleration += wSeparation + wAlignment + wCohesion;
+    acceleration.limit(maxForce);
 }
