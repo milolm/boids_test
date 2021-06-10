@@ -123,10 +123,9 @@ Vec2d Boid::getCohesion(std::vector<Boid>& boids)
 void Boid::applyFlocking(std::vector<Boid>& boids)
 {
     // Weighted all 3 behaviors
-    Vec2d wSeparation(getSeparation(boids) * 1.8f);
+    Vec2d wSeparation(getSeparation(boids) * 1.95f);
     Vec2d wAlignment(getAlignment(boids) * 1.85f);
     Vec2d wCohesion(getCohesion(boids) * 0.35f);
 
-    acceleration += wSeparation + wAlignment + wCohesion;
-    acceleration.limit(maxForce);
+    acceleration += (wSeparation + wAlignment + wCohesion).limit(maxForce);
 }

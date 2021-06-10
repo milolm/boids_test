@@ -8,7 +8,7 @@
 
 Simulation::Simulation()
 {
-    backgroundColor = sf::Color::Black;
+    backgroundColor = sf::Color(201, 230, 255);
     boidColor = sf::Color::Blue;
 }
 
@@ -21,7 +21,7 @@ void Simulation::run()
     window.setFramerateLimit(60);
     // Render loop
 
-    Flock flock(50);
+    Flock flock(80);
 
     flock.setScreenBorders(windowWidth, windowHeight);
 
@@ -38,7 +38,27 @@ void Simulation::run()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::R)
+                {
+                    flock.randomizeAllPositions(windowWidth, windowHeight);
+                    flock.randomizeAllVelocities();
+                }
+
+                if (event.key.code == sf::Keyboard::Space)
+                {
+                    sf::Vector2i mPos = sf::Mouse::getPosition(window);
+                    Vec2d mouseVec(
+                        static_cast<float>( mPos.x ),
+                        static_cast<float>( mPos.y )
+                    );
+                    flock.createRepulsion(mouseVec, 80.f, 1.f);
+                }
+
+            }
         }
+
 
         window.clear(backgroundColor);
         // Draw

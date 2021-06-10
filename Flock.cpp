@@ -20,6 +20,11 @@ Flock::Flock(const int& initialAmmount)
     {
         addBoid();
     }
+
+
+
+
+
 }
 
 // ---------------------- Functions --------------------
@@ -53,9 +58,9 @@ void Flock::addShapes()
     circle->setRadius(6.0f);
     circle->setPosition(0.0f, 0.0f);
     circle->setOrigin(6.0f, 6.0f);
-    circle->setFillColor(sf::Color::Transparent);
-    circle->setOutlineThickness(1.2f);
-    circle->setOutlineColor(sf::Color::Blue);
+    circle->setFillColor(sf::Color(136, 200, 255));
+    circle->setOutlineThickness(1.8f);
+    circle->setOutlineColor(sf::Color(20, 53, 86));
 
     boidShapes.push_back(circle);
 
@@ -123,4 +128,19 @@ void Flock::setScreenBorders(const unsigned int& x, const unsigned int& y)
 {
     xBorder = x;
     yBorder = y;
+}
+
+// just for fun ig
+void Flock::createRepulsion(Vec2d& origin, const float& radius, const float& force)
+{
+    for(auto& boid : boids)
+    {
+        Vec2d diff( boid.position - origin);
+        // Avoid magnitude() because no need to use std::sqrt();
+        if ((diff.x * diff.x + diff.y * diff.y) <= (radius * radius))
+        {
+            boid.acceleration += (diff.unit() * force);
+        }
+
+    }
 }

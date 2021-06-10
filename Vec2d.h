@@ -47,7 +47,6 @@ public:
     // --- Vec2d util
     static Vec2d randomUnitVector();
     static float toDegree(const float&);
-
 };
 
 #endif

@@ -52,6 +52,8 @@ public:
     void drawAllShapes(sf::RenderWindow& window);
 
     void setScreenBorders(const unsigned int&, const unsigned int&);
+
+    void createRepulsion(Vec2d&, const float&, const float&);
 };
 
 

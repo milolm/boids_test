@@ -11,13 +11,13 @@ public:
     Vec2d acceleration;
     float mass;
 
-    float maxSpeed{ 0.90f };
-    float maxForce{ 0.38f };
+    float maxSpeed{ 0.75f };
+    float maxForce{ 0.3f };
 
     float visionLength{ 50.f };
 
 
-    // --- Constructors
+    // --- Constructor
     Boid();
 
     // --- Methods
